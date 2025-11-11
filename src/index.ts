@@ -2,7 +2,7 @@ import type { Program } from "ollieos/types";
 
 export default {
     name: "doom",
-    description: "Doom.",
+    description: "DOOM.",
     usage_suffix: "",
     arg_descriptions: {},
     main: async (data) => {
@@ -18,15 +18,6 @@ export default {
         // first check if it's already loaded
         if (!(window as any).Dos) {
             await new Promise<void>((resolve, reject) => {
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = "https://v8.js-dos.com/latest/js-dos.css";
-                link.onload = () => resolve();
-                link.onerror = () => reject(new Error("Failed to load js-dos stylesheet."));
-                document.head.appendChild(link);
-            });
-
-            await new Promise<void>((resolve, reject) => {
                 const script = document.createElement("script");
                 script.src = "https://v8.js-dos.com/latest/js-dos.js";
                 script.onload = () => resolve();
@@ -36,7 +27,7 @@ export default {
         }
 
         const wind = new wm.Window();
-        wind.title = "Doom";
+        wind.title = "DOOM";
 
         // determine if width or height is the limiting factor
         const width_limited = (window.innerWidth / window.innerHeight) < (4 / 3);
@@ -56,20 +47,38 @@ export default {
         wind.x = (window.innerWidth - (width_limited ? (win_size / 100 * window.innerWidth) : (win_size * (4 / 3) / 100 * window.innerHeight))) / 2;
         wind.y = (window.innerHeight - (width_limited ? (win_size * (3 / 4) / 100 * window.innerWidth) : (win_size / 100 * window.innerHeight))) / 2;
 
+        // load js-dos style only in the shadow dom
+        await new Promise<void>((resolve, reject) => {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "https://v8.js-dos.com/latest/js-dos.css";
+            link.onload = () => resolve();
+            link.onerror = () => reject(new Error("Failed to load js-dos stylesheet."));
+            wind.dom.appendChild(link);
+        });
+
         const dos_div = document.createElement("div");
         dos_div.style.width = "100%";
         dos_div.style.height = "100%";
 
-        (window as any).Dos(dos_div, {
+        const dos = (window as any).Dos(dos_div, {
             // TODO: host ourself
             url: "https://raw.githubusercontent.com/linuxfandudeguy/doomonline/refs/heads/master/bundle.jsdos",
             noCloud: true,
             kiosk: true,
-            autoStart: true
+            autoStart: true,
         });
 
         wind.dom.appendChild(dos_div);
         wind.show();
+
+        wind.add_event_listener("hide", async () => {
+            dos.setPaused(true);
+        });
+
+        wind.add_event_listener("close", async () => {
+            dos.stop();
+        });
 
         return 0;
     }
