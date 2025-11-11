@@ -1,0 +1,5 @@
+dist
+maps
+node_modules
+.idea
+*.iml

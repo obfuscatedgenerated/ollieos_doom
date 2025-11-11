@@ -1,0 +1,23 @@
+{
+  "name": "doom",
+  "version": "1.0.0",
+  "description": "Doom.",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "webpack --mode=production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "ollieos": "github:obfuscatedgenerated/obfuscatedgenerated.github.io#types",
+    "ollieos_pkgbuild": "github:obfuscatedgenerated/ollieos_pkgbuild",
+    "webpack-cli": "^5.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/obfuscatedgenerated/ollieos_doom.git"
+  }
+}
