@@ -30,7 +30,7 @@ export default {
         wind.title = "DOOM";
 
         // determine if width or height is the limiting factor
-        const aspect_ratio = 8 / 5;
+        const aspect_ratio = 6 / 5;
         const width_limited = (window.innerWidth / window.innerHeight) < aspect_ratio;
 
         // generate width and height based on limiting factor. get to 95% of the limiting factor but maintain 4:3 aspect ratio
