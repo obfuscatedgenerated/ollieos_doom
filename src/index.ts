@@ -83,3 +83,5 @@ export default {
         return 0;
     }
 } as Program;
+
+// TODO: better restoration of keyboard control on minimise and unfocus
