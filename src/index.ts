@@ -30,22 +30,23 @@ export default {
         wind.title = "DOOM";
 
         // determine if width or height is the limiting factor
-        const width_limited = (window.innerWidth / window.innerHeight) < (4 / 3);
+        const aspect_ratio = 8 / 5;
+        const width_limited = (window.innerWidth / window.innerHeight) < aspect_ratio;
 
         // generate width and height based on limiting factor. get to 95% of the limiting factor but maintain 4:3 aspect ratio
         // do it in terms of viewport units, ensuring to use the same unit for both width and height
         const unit = width_limited ? "vw" : "vh";
         const win_size = 95;
 
-        const width = width_limited ? win_size : (win_size * (4 / 3));
-        const height = width_limited ? (win_size * (3 / 4)) : win_size
+        const width = width_limited ? win_size : (win_size * aspect_ratio);
+        const height = width_limited ? (win_size / aspect_ratio) : win_size
 
         wind.width = `${width}${unit}`;
         wind.height = `${height}${unit}`;
 
         // use window.inner sizes to center the window
-        wind.x = (window.innerWidth - (width_limited ? (win_size / 100 * window.innerWidth) : (win_size * (4 / 3) / 100 * window.innerHeight))) / 2;
-        wind.y = (window.innerHeight - (width_limited ? (win_size * (3 / 4) / 100 * window.innerWidth) : (win_size / 100 * window.innerHeight))) / 2;
+        wind.x = (window.innerWidth - (width_limited ? (win_size / 100 * window.innerWidth) : (win_size * aspect_ratio / 100 * window.innerHeight))) / 2;
+        wind.y = (window.innerHeight - (width_limited ? (win_size / aspect_ratio / 100 * window.innerWidth) : (win_size / 100 * window.innerHeight))) / 2;
 
         // load js-dos style only in the shadow dom
         await new Promise<void>((resolve, reject) => {
