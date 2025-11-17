@@ -77,6 +77,10 @@ export default {
             dos.setPaused(true);
         });
 
+        wind.add_event_listener("show", async () => {
+            dos.setPaused(false);
+        });
+
         wind.add_event_listener("close", async () => {
             dos.stop();
         });
