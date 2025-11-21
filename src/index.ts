@@ -6,9 +6,9 @@ export default {
     usage_suffix: "",
     arg_descriptions: {},
     main: async (data) => {
-        const { term } = data;
+        const { term, process } = data;
 
-        const wm = term.get_window_manager();
+        const wm = term.has_window_manager();
         if (!wm) {
             term.writeln("Window manager not found.");
             return 1;
@@ -26,7 +26,7 @@ export default {
             });
         }
 
-        const wind = new wm.Window();
+        const wind = process.create_window();
         wind.title = "DOOM";
 
         // determine if width or height is the limiting factor
@@ -83,10 +83,13 @@ export default {
 
         wind.add_event_listener("close", async () => {
             dos.stop();
+            process.kill(0);
         });
 
+        process.detach();
         return 0;
     }
 } as Program;
 
-// TODO: better restoration of keyboard control on minimise and unfocus
+// TODO: better restoration of keyboard control on minimise and unfocus some hack like this? https://gemini.google.com/app/3bdc1732e3b45452
+// perhaps use term._core._keyUp instead to send the event directly to xterm?
