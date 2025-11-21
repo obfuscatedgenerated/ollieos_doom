@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPL-2.0",
   "dependencies": {},
   "devDependencies": {
     "ollieos": "github:obfuscatedgenerated/obfuscatedgenerated.github.io#types",
