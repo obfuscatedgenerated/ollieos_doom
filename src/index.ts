@@ -5,10 +5,11 @@ export default {
     description: "DOOM.",
     usage_suffix: "",
     arg_descriptions: {},
+    compat: "2.0.0",
     main: async (data) => {
-        const { term, process } = data;
+        const { kernel, term, process } = data;
 
-        const wm = term.has_window_manager();
+        const wm = kernel.has_window_manager();
         if (!wm) {
             term.writeln("Window manager not found.");
             return 1;
