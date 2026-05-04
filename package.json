@@ -1,17 +1,20 @@
 {
   "name": "doom",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Doom.",
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "watch": "webpack --watch --mode=development",
+    "dev": "concurrently \"npm:watch\" \"npx ollieos-pkg-serve\"",
+    "update-ollieos-deps": "npm update ollieos ollieos_pkgbuild"
   },
   "keywords": [],
   "author": "",
   "license": "GPL-2.0",
-  "dependencies": {},
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "ollieos": "github:obfuscatedgenerated/obfuscatedgenerated.github.io#types",
     "ollieos_pkgbuild": "github:obfuscatedgenerated/ollieos_pkgbuild",
     "webpack-cli": "^5.1.4"

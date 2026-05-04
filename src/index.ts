@@ -1,5 +1,7 @@
 import type { Program } from "ollieos/types";
 
+const BUNDLE_PATH = "/usr/bin/doom/bundle.jsdos";
+
 export default {
     name: "doom",
     description: "DOOM.",
@@ -26,6 +28,12 @@ export default {
                 document.head.appendChild(script);
             });
         }
+
+        // load the bundle as a blob url from the fs
+        const fs = kernel.get_fs();
+        const bundle_data = await fs.read_file(BUNDLE_PATH, true) as Uint8Array;
+        const bundle_blob = new Blob([bundle_data.slice()], { type: "application/zip" });
+        const bundle_url = URL.createObjectURL(bundle_blob);
 
         const wind = process.create_window();
         wind.title = "DOOM";
@@ -64,8 +72,7 @@ export default {
         dos_div.style.height = "100%";
 
         const dos = (window as any).Dos(dos_div, {
-            // TODO: host ourself
-            url: "https://raw.githubusercontent.com/linuxfandudeguy/doomonline/refs/heads/master/bundle.jsdos",
+            url: bundle_url,
             noCloud: true,
             kiosk: true,
             autoStart: true,
@@ -84,6 +91,8 @@ export default {
 
         wind.add_event_listener("close", async () => {
             dos.stop();
+
+            URL.revokeObjectURL(bundle_url);
             process.kill(0);
         });
 
