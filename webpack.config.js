@@ -25,7 +25,7 @@ const externals = {};
 
 // EDIT THIS ARRAY TO DEFINE ADDITIONAL FILES TO BE INCLUDED IN THE PACKAGE
 const additional_files = [
-    "./src/bundle.jsdos"
+    {local_path: "./src/bundle.jsdos", pkg_path: "bundle.jsdos", binary: true}
     // "./path/to/file.txt",
     // {local_path: "./path/to/file.txt", pkg_path: "custom_name.txt"},
     // {local_path: "./path/to/image.png", pkg_path: "images/image.png", binary: true}
