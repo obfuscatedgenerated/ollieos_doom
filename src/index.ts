@@ -19,14 +19,16 @@ export default {
 
         // load js-dos from cdn
         // first check if it's already loaded
-        if (!(window as any).Dos) {
+        if (!(window as any).emulators) {
             await new Promise<void>((resolve, reject) => {
                 const script = document.createElement("script");
-                script.src = "https://v8.js-dos.com/latest/js-dos.js";
+                script.src = "https://v8.js-dos.com/latest/emulators/emulators.js";
                 script.onload = () => resolve();
                 script.onerror = () => reject(new Error("Failed to load js-dos library."));
                 document.head.appendChild(script);
             });
+
+            (window as any).emulators.pathPrefix = "https://v8.js-dos.com/latest/emulators/";
         }
 
         // load the bundle as a blob url from the fs
@@ -71,26 +73,49 @@ export default {
         dos_div.style.width = "100%";
         dos_div.style.height = "100%";
 
-        const dos = (window as any).Dos(dos_div, {
-            url: bundle_url,
-            noCloud: true,
-            kiosk: true,
-            autoStart: true,
+        const emulators = (window as any).emulators;
+        const bundle = await emulators.bundle(bundle_url);
+
+        const ci = await emulators.dosboxWorker(bundle);
+
+        const canvas = document.createElement("canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        dos_div.appendChild(canvas);
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            term.writeln("Failed to get canvas context.");
+            return 1;
+        }
+
+        const rgba = new Uint8ClampedArray(320 * 200 * 4);
+        ci.events().onFrame((rgb) => {
+            for (let next = 0; next < 320 * 200; ++next) {
+                rgba[next * 4 + 0] = rgb[next * 3 + 0];
+                rgba[next * 4 + 1] = rgb[next * 3 + 1];
+                rgba[next * 4 + 2] = rgb[next * 3 + 2];
+                rgba[next * 4 + 3] = 255;
+            }
+
+            ctx?.putImageData(new ImageData(rgba, 320, 200), 0, 0);
         });
+
+        await ci.shell("doom");
 
         wind.dom.appendChild(dos_div);
         wind.show();
 
         wind.add_event_listener("hide", async () => {
-            dos.setPaused(true);
+            ci.pause();
         });
 
         wind.add_event_listener("show", async () => {
-            dos.setPaused(false);
+            ci.resume();
         });
 
         wind.add_event_listener("close", async () => {
-            dos.stop();
+            ci.exit();
 
             URL.revokeObjectURL(bundle_url);
             process.kill(0);
