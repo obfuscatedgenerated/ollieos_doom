@@ -7,6 +7,9 @@ export default {
     description: "DOOM.",
     usage_suffix: "",
     arg_descriptions: {},
+    gui: {
+        display_name: "DOOM"
+    },
     compat: "2.0.0",
     main: async (data) => {
         const { kernel, term, process } = data;
